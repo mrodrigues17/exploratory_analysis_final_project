@@ -73,7 +73,7 @@ if(!file.exists("pm25_data.txt")){
 NEI <- readRDS("summarySCC_PM25.rds")
 SCC <- readRDS("Source_Classification_Code.rds")
 ```
-For plot 1, we are looking at total emissions by the four years in the USA to see what the trend is. Here is a link to that plot: <a href = https://raw.githubusercontent.com/mrodrigues17/exploratory_analysis_final_project/master/plot1.png>plot1</a>
+For plot 1, we are looking at total emissions by the four years in the USA to see what the trend is. Here is a link to that plot: <a href = "https://raw.githubusercontent.com/mrodrigues17/exploratory_analysis_final_project/master/plot1.png" target = "_blank">plot1</a>
 ```
 png("plot1.png")
 NEI$year <- as.character(NEI$year)
