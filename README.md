@@ -60,7 +60,7 @@ For each plot you should
 - Copy and paste the R code from the corresponding R file into the text box at the appropriate point in the peer assessment.
 
 My submission:
-First download, uzip and read in the data files.
+First download, unzip and read in the data files.
 ```
 data1 <- "pm25_data.zip"
 if(!file.exists(data1)){
