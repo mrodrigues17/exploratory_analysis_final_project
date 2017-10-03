@@ -87,3 +87,90 @@ axis(1, 1:4, labels = c("1999", "2002", "2005", "2008"))
 
 dev.off()
 ```
+For plot 2, we are looking at total emissions for the city of Baltimore by the years specified. Here is a link to that plot: <a href = "https://raw.githubusercontent.com/mrodrigues17/exploratory_analysis_final_project/master/plot2.png" target = "_blank">plot2</a>
+```
+png("plot2.png")
+library(dplyr)
+NEI$year <- as.character(NEI$year)
+
+baltimore_emissions <- NEI %>%
+  filter(fips == "24510")%>%
+  group_by(year)%>%
+  summarize(sum_emissions = sum(Emissions, na.rm = T))
+
+with(baltimore_emissions, plot(year, sum_emissions,
+                               type = "l", ylab = "Total PM2.5 Emissions in tons", main = 
+                                 "Total PM2.5 Emissions by Year in Baltimore, USA"))
+with(baltimore_emissions, points(year, sum_emissions, pch = 20, col = "blue"))
+dev.off()
+```
+Plot 3 looks at the emissions from Baltimore for the four different types of sources. Here is a link to the plot: <a href ="https://raw.githubusercontent.com/mrodrigues17/exploratory_analysis_final_project/master/plot3.png" target ="_blank">plot3</a>
+  ```
+png("plot3.png")
+library(ggplot2)
+NEI$type <- as.factor(NEI$type)
+NEI$year <- as.integer(NEI$year)
+baltimore_emissions <- NEI %>%
+  filter(fips == "24510")%>%
+  group_by(type, year) %>%
+  summarize(sum_emissions = sum(Emissions, na.rm = T))
+
+ggplot(baltimore_emissions, aes(year, sum_emissions, col = type)) + 
+  ylab("Total PM2.5 Emissions (tons)") +
+  ggtitle("PM 2.5 Levels by Source Type in Baltimore from 1998-2008") + 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+dev.off()
+```
+Plot 4 looks at emissions from coal combustion across the United States. Here is a link to plot: <a href ="https://raw.githubusercontent.com/mrodrigues17/exploratory_analysis_final_project/master/plot4.png" target ="_blank">plot4</a>
+```
+png("plot4.png")
+SCC_coal <- SCC[grepl("Coal", SCC$Short.Name), ]
+joined_SCC <- inner_join(NEI, SCC_coal, by = "SCC")
+
+coal_emissions <- merged_SCC %>%
+  group_by(year) %>%
+  summarise(emissions = sum(Emissions))
+
+ggplot(coal_emissions, aes(year, emissions)) +
+  geom_point(color = "red", size = 3) + 
+  geom_line() +
+  ylab("PM2.5 Emissions (tons)") +
+  ggtitle("PM2.5 Emissions from Coal Combustion in the USA")
+
+dev.off()
+```
+Plot 5 looks at emissions from motor vehicles in Baltimore. Here is a link to the plot: <a href ="https://raw.githubusercontent.com/mrodrigues17/exploratory_analysis_final_project/master/plot5.png" target = "_blank">plot5</a>
+
+```
+png("plot5.png")
+baltimore_motor_emissions <- NEI %>%
+  filter(fips == "24510" & type == "ON-ROAD") %>%
+  group_by(year)%>%
+  summarize(emissions = sum(Emissions, na.rm = T))
+
+ggplot(baltimore_motor_emissions, aes(year, emissions)) +
+  geom_point(color = "blue", size = 3) +
+  geom_line(color = "blue") +
+  ylab("PM2.5 Emissions (tons)") +
+  ggtitle("PM2.5 Emissions from Motor Vehicles in Baltimore (1998-2008)")
+  ```
+  Plot 6 look at emission from motor vehicles in both Baltimore and Los Angeles. Here is a link to the plot: <a href ="https://raw.githubusercontent.com/mrodrigues17/exploratory_analysis_final_project/master/plot6.png" target = "_blank">plot6</a>
+  ```
+  png("plot6.png")
+NEI$fips[NEI$fips == "24510"] <- "Baltimore"
+NEI$fips[NEI$fips == "06037"] <- "LA"
+
+baltimore_vs_LA_motor_emissions <- NEI %>%
+  filter(fips == "Baltimore" & type == "ON-ROAD" | fips == "LA" & type == "ON-ROAD") %>%
+  group_by(year, fips)%>%
+  summarize(emissions = sum(Emissions, na.rm = T))
+
+ggplot(baltimore_vs_LA_motor_emissions, aes(year, emissions, col = fips)) +
+  geom_point(pch = 20, size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  ylab("PM2.5 Emissions (tons)") +
+  ggtitle("PM2.5 Emissions from Motor Vehicles in Baltimore vs LA (1998-2008)")
+
+dev.off()
+```
